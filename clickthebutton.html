@@ -1,0 +1,177 @@
+<link rel="shortcut icon" href="#">
+<style>
+body{
+	margin:0;
+	padding:0;
+}
+.fb {
+	position: absolute;
+	bottom: 50%;
+	right: 50%;
+	margin: 10px;
+	padding: 10px;
+	border-radius: 20%;
+	background-color: #007bff;
+	color: #ffffff;
+	font-size: 20px;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+	transform-origin: 0 0;
+}
+.fp {
+	position: absolute;
+	bottom: 50%;
+	right: 50%;
+	margin: 15px;
+	padding: 15px;
+	border-radius: 20%;
+	background-color: #07fc03;
+	color: #ffffff;
+	font-size: 20px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	transform-origin: 0 0;
+}
+.begin{
+	position:absolute;
+	left:0;
+	top:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+	margin: 100px;
+	padding: 100px;
+	border-radius: 50%;
+	color: #000000;
+	font-size: 100px;
+	cursor: pointer;
+	background: linear-gradient(180deg, #00f7ff, #07fc03);
+}
+</style>
+<title id="score">Click the button game</title>
+<button class="fb" onclick="addbutton(this.id)" id="cl" clicks="2">Click me!</button>
+<button class="begin" onclick="start()" id="be">Press me to play!</button>
+<p>Music: Bit Shift - Kevin MacLeod</p>
+<script>
+showe(false,"cl")
+const audioc1 = new Audio('sounds/c1.wav');
+const audioc2 = new Audio('sounds/c2.wav');
+const audioc3 = new Audio('sounds/c3.wav');
+const audiomove1 = new Audio('sounds/move1.wav');
+const audiomove2 = new Audio('sounds/move2.wav');
+const audiomove3 = new Audio('sounds/move3.wav');
+const audiomove4 = new Audio('sounds/move4.wav');
+const audiomove5 = new Audio('sounds/move5.wav');
+const audioboom1 = new Audio('sounds/boom1.wav');
+const audioboom2 = new Audio('sounds/boom2.wav');
+const audiobit = new Audio('sounds/bit_shift.mp3');
+audiobit.addEventListener('ended', function() {
+	this.currentTime = 0;
+	this.play();
+}, false);
+var scorer=1;
+const button = document.querySelector('.fb');
+let userx=0;
+let usery=0;
+function moveButton(event) {
+	const button = event.target;
+	const buttonBounds = button.getBoundingClientRect();
+	const buttonCenterX = buttonBounds.left + buttonBounds.width / 2;
+	const buttonCenterY = buttonBounds.top + buttonBounds.height / 2;
+	const distanceX = event.clientX - buttonCenterX;
+	const distanceY = event.clientY - buttonCenterY;
+	let userx=event.clientX;
+	let usery=event.clientY;
+	const maxDistance = Math.random()*100;
+	const distance = Math.sqrt(distanceX ** 2 + distanceY ** 2);
+	if (distance < maxDistance) {
+		const moveX = rn(-window.innerWidth,window.innerWidth);
+		const moveY = rn(-window.innerHeight,window.innerHeight);
+		button.style.transform = "translate("+parseInt(moveX/5)+"px,"+parseInt(moveY/5)+"px) rotate("+Math.floor(Math.random()*180)+"deg)";
+		if (Math.floor(Math.random()*5)==0){
+			audiomove1.play();
+		}else if  (Math.floor(Math.random()*4)==0){
+			audiomove2.play();
+		}else if  (Math.floor(Math.random()*3)==0){
+			audiomove3.play();
+		}else if  (Math.floor(Math.random()*2)==0){
+			audiomove4.play();
+		}else{
+			audiomove5.play();
+		}
+	}
+}
+function addbutton(ider) {
+	var btn = document.createElement("button");
+	btn.innerHTML = "Click me!";
+	btn.setAttribute("onclick","addbutton(this.id,this.clicks)");
+	btn.setAttribute("clicks","2");
+	let idq=rnn()
+	btn.setAttribute("id",idq);
+	if  (Math.floor(Math.random()*2)==0){
+		btn.classList.add("fb");
+	}else{
+		btn.classList.add("fp");
+	}
+	const moveX = rn(0,window.innerWidth);
+	const moveY = rn(0,window.innerHeight);
+	btn.style.transform = "translate("+parseInt(moveX/2)+"px,"+parseInt(moveY/5)+"px) rotate("+Math.floor(Math.random()*180)+"deg)";
+	document.body.appendChild(btn);
+	btn.addEventListener('mousemove', moveButton);
+	getid=document.getElementById(ider);
+	if (getid.getAttribute("class")=="fb"){
+		scorer=scorer+1
+	}else if (getid.getAttribute("class")=="fp"){
+		scorer=scorer+2
+	}
+	document.getElementById("score").innerHTML="Score:"+scorer;
+	document.title="Score:"+scorer;
+	if (Math.floor(Math.random()*3)==0){
+		audioc1.cloneNode(true).play();
+	}else if  (Math.floor(Math.random()*2)==0){
+		audioc2.cloneNode(true).play();
+	}else{
+		audioc3.cloneNode(true).play();
+	}
+	clicker=getid.getAttribute("clicks")
+	if (clicker==0){
+		getid.remove();
+		btn.remove();
+		if (Math.floor(Math.random()*2)==0){
+			audioboom1.cloneNode(true).play();
+		}else{
+			audioboom2.cloneNode(true).play();
+		}
+	}else if (clicker>0){
+		getid.setAttribute("clicks",clicker-1);
+	}
+}
+function showe(show,elementid){
+	if (show){
+		var x=document.getElementById(elementid)
+		x.style.display="block";
+	}else{
+		var x=document.getElementById(elementid)
+		x.style.display="none";
+	}
+}
+function start(){
+	audiobit.play();
+	showe(false,"be")
+	showe(true,"cl")
+	document.getElementById('score').innerHTML="Score:"+scorer;
+}
+function rnn(){
+	let x=""
+	for (let i=0;i<10;i++) {
+		x=x+Math.floor(Math.random()*10);
+	}
+	return x
+}
+function removeel(removeer) {
+	console.log(removeer)
+	removeer.remove();
+}
+function rn(min,max){return Math.floor(Math.random()*(max-min))+min;}
+button.addEventListener('mousemove', moveButton);
+</script>
